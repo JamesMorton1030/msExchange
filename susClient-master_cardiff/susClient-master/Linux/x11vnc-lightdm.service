@@ -1,0 +1,13 @@
+[Unit]
+Description="x11vnc"
+Requires=display-manager.service
+After=display-manager.service
+
+[Service]
+ExecStart=/usr/bin/x11vnc  -create -xkb -noxrecord -noxfixes -noxdamage -display :0 -auth /var/run/lightdm/root/:0 -rfbport 5905 -forever -nopw
+ExecStop=/usr/bin/killall x11vnc
+Restart=on-failure
+Restart-sec=2
+
+[Install]
+WantedBy=multi-user.target

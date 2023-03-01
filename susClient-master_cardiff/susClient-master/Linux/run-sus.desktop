@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=SUS
+GenericName=Run SUS on Login
+Exec=/bin/bash -c 'sleep 15 && gnome-terminal --working-directory=/sus -- /usr/bin/python3 /sus/AUS/main.py'
+Terminal=false
+Type=Application
+X-GNOME-Autostart-enabled=true

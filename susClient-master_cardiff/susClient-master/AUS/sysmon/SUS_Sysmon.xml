@@ -1,0 +1,16 @@
+<!-- Sysmon Configuration file by Michael Lendvai @ University of Warwick, modified by Joshua Hawking @ University of Warwick -->
+<!-- Enables the logging of event ID 7 (image load) events and adds SHA256 hashes to logs-->
+<!-- Install with: Sysmon64.exe -i .\SUS_Sysmon.xml -->
+<!-- Update with: Sysmon64.exe -c .\SUS_Sysmon.xml -->
+<Sysmon schemaversion="4.32">
+  <!-- Capture all hashes -->
+  <HashAlgorithms>SHA256</HashAlgorithms>
+  <CheckRevocation/>
+  <EventFiltering>
+    <ImageLoad onmatch="exclude">
+        <!-- These two processes can result in very large log sizes, so are excluded -->
+        <Image condition="image">C:\Windows\system32\wbem\WmiApSrv.exe</Image>
+        <Image condition="image">C:\Windows\system32\wbem\WmiPrvSE.exe</Image>
+    </ImageLoad>
+  </EventFiltering>
+</Sysmon>

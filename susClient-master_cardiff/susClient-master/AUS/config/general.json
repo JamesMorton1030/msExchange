@@ -1,0 +1,57 @@
+{
+  "api_url": "http://127.0.0.1:5001",
+
+  "apps": [
+    "apps.powershell",
+    "apps.browser",
+    "apps.outlook",
+    "apps.word",
+    "apps.notepad",
+    "apps.commandline",
+    "apps.acrobat",
+    "apps.process"
+  ],
+
+  "logging": {
+    "activity": {
+      "log_to_server": {
+        "enabled": true,
+        "endpoint": "/api/log/activity"
+      },
+      "log_to_stdout": {
+        "enabled": true
+      },
+      "log_to_file": {
+        "enabled": false,
+        "file_path": "C:/ProgramData/SUS/activity.log"
+      }
+    },
+    "debug": {
+      "log_to_server": {
+        "enabled": true,
+        "endpoint": "/api/log/debug"
+      },
+      "log_to_stdout": {
+        "enabled": true
+      },
+      "log_to_file": {
+        "enabled": false,
+        "file_path": "C:/ProgramData/SUS/debug.log"
+      }
+    }
+  },
+
+  "sysmon_logs": {
+    "collect_logs": false,
+    "upload_to_server": false,
+    "upload_csv_file_path": "C:\\tempLogs\\{}\\sysmon_logs.csv",
+    "upload_endpoint": "/api/sysmon_logs",
+    "local_administrator_username": "Administrator",
+    "local_administrator_password": "password",
+    "powershell_script_path": "\\\\windows-server\\SUS\\AUS\\sysmon\\collectSysmon.ps1"
+  },
+
+  "active_directory_domain": "sustest.internal",
+
+  "development_mode": true
+}

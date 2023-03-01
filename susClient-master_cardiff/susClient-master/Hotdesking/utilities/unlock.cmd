@@ -1,0 +1,1 @@
+cscript unlock.vbs %1

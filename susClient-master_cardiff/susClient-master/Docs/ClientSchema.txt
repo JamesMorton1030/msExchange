@@ -1,0 +1,191 @@
+Ver 0.4
+
+TODO: format this nicely, markup?
+
+Client:
+Client represents attributes of the running program.
+client.connection object (which allows connections to the server, such as GET / POST requests)
+client.scheduler object, etc
+it contains the "brains" of the client
+
+client.modules object (handles loading appropriate modules)
+the client modules object can be used to import modules or tasks you wish to call via
+add_module, get_app or get_task
+
+client.modules.get_app takes the name of an app and the module it's in, and returns the class object for the app represented by that name,
+to be used inside task_load functions to find our apps
+
+
+Application manager:
+Contains a set of open application objects
+
+is_open(application)
+checks if an open instance of the application object exists
+
+get_open_app(application)
+returns open instance of application (or None)
+
+add_open_app(application)
+adds an instance of the application to the set of it is not already in there - the object passed MUST be an instance of the pywinauto Application object if pywinauto is being used, in order to use functions such as .top_window() on it.
+
+remove_open_app(application)
+removes open app from applications
+
+example use case:
+
+if not is_open(application):
+    self.client.get_app(applicationmodulename, applicationname)
+    add_open_app(self.app)
+else:
+    get_open_app(application)
+
+in task_load
+
+client.connection stores a current requests session to the server,
+so we can perform
+res = self.client.connection.get(self.server, json={"hello": "world"})
+if res.status_code == 204:
+    print("no stuff, uh oh!")
+elif res.is_json:
+    returned = res.json()
+
+TODO: consider moving functionality to other places once the 3 days of data have been determined - for instance, should app.open take over some of this? 
+
+
+Tasks:
+Tasks inherit BaseTask
+
+Order of functions in task:
+__init__ (which then calls task_load) - preparation
+start - initialises the application, runs once right at the start of the task
+main - does the main task thing
+stop - ran at the end of the task
+
+
+__init__() in Task:
+- should not be modified or overriden ever in any task, 
+- means that tasks are initialised with the client object, the correct app object and calls task_load 
+
+task_load() in Task:
+- REQUIRED
+- the only thing that is required inside task_load is to set self.app to an appropriate application, to be opened in start(), and to set self.started to False
+- optional configuration arguments are passed as kwargs to the tasks __init__, intially, via **configdict 
+- __init__ will call the classes task_load method with these kwargs automatically - thus, we define what to do with these kwargs in task_load
+- For example, task_load(self, url_list=["http://test.com"]])
+- At this point, passed kwargs should be saved in to the class
+
+- To retrieve the self.app object, use the self.client.modules.get_app function with the name of the app
+- If you wish to set the self.app for the task to always be the same (i.e. the task always uses the same app)
+  simply hardcode self.app = self.client.modules.get_app("appmodulename", "appname")
+  otherwise, consider it as an optional argument - for instance,
+      task_load(self, ..., app=["firefoxapp", "chromeapp", "edgeapp"]):
+          ...
+          chosen = random.choice(app) if isinstance(app,list) else app 
+          self.app = self.client.modules.get_app(appmodulename, app)
+
+start() in Task:
+- REQUIRED
+- Runs once at the start of a class
+- Must include a self.app.open()
+- Refer to the Application Manager section for how to take an open instance of the class if necessary - the example pattern shown there should ideally always be followed
+- must call self.timer.start() to begin the timer, as all tasks should fallback to ending on time if necessary
+- As these above actions should be taken by every task, to prevent unnecessary repetition they're implemented in the class all tasks inherit from - BaseTask
+- thus, all task starts should be, at a minimum
+    start(self):
+        super().start()
+
+main() in Task:
+- REQUIRED
+- MUST BE ASYNC (async def main...)
+- It does the main "task thing"
+- Every task should exit on either a time (passed by the scheduler always)
+or a parameter (passed in the kwargs)
+for instance, browsing could exit after either 5 minutes or a depth of 6 links is reached
+
+- To exit on time, self.timer is true once the necessary time has been reached, so exit upon self.timer == True
+
+- If you wish to request the server, refer to the client connection section for usage and examples 
+
+- ANY function that may cause an interrupt must also be async. For example, if main() calls find_links_to_open() which will call another task, find_links_to_open must also be async
+
+stop() in Task:
+- REQUIRED
+- Stop will either close the application (e.g. close the browser) or store it somewhere to be used late 
+- If self.close_app is true, it should close the application and call remove_open_app(application) to take it out of the application manager
+- Otherwise, it is already stored in the application manager to simply end the task
+- As these above actions should be taken by every task, to prevent unnecessary repetition they're implemented in the class all tasks inherit from - BaseTask
+- thus, all task stops should be, at a minimum
+    stop(self):
+        super().stop()
+        
+If your task ever interrupts with another task, the functions below are highly recommended to limit issues such as being unable to interacted
+with unfocused windows.
+switch_out() in Task:
+- OPTIONAL
+- After another task is interrupted (i.e. we want to pause our current task temporarily and run another task), this function 
+should prepare the task to be swapped out. For example, ensuring no dialogs are open.
+- ensure that super().switch_out() is called, as it will call self.timer.pause() here
+
+switch_in() in Task:
+- OPTIONAL
+- Prepare the task to be ran again after something else has been swapped out. For example, focusing the application window so it's
+ready to interacted with again.
+- ensure that super().switch_in() is called, as it will call self.timer.unpause() here
+
+
+Apps:
+Apps inherit from BaseApp
+self.client will always the Client object
+TODO: Make app use a context manager with open and close (Discuss with Adam - Phase 3?)
+
+
+open() in BaseApp:
+- REQUIRED
+- TODO: Process ID hiding should be required here
+- Simply open the instance of the application to be available to be interacted with
+- This should return an instance of the pywinauto Application object if it is using pywinauto (rather than, say, the window reference), as this uniquely identifies the application window and allows operations like .top_window() 
+
+close() in App:
+- REQUIRED
+- This will close the application.
+- Returns true if the application existed
+- Returns false if it didn't exist
+- The application MUST be closed by the end of this function
+- Note that this is only called by the task using the app if it intends to fully close it, 
+  it will not be called if we store the app somewhere else temporarily
+
+Scheduler:
+The scheduler has a list of tasks that have been added from an activity via scheduler.schedule_activity(activity_config).
+These tasks have been created (task_load() has not been called yet, only __init__()) already.
+
+When a task wants to call another task, it is a case of creating the task class and passing the options to the task as shown below:
+
+# Browse http://google.com for 120 seconds before printing "Hello world!"
+task = self.client.modules.get_task("apps.browser", "BrowseWebsite")
+config = {"url_list": ["http://google.com"], "time": 120}
+task_obj = task(self.client, activity_name=self.activity_name, **config)
+
+await self.client.scheduler.interrupt(task_obj)
+
+print("Hello World!")
+
+In order for the task to be run immediately, use await self.client.scheduler.interrupt(task_obj). This will make the scheduler call switch_out on the current task
+then run the interrupted task (task_load() -> start() -> main() -> stop()) before returning to the current task and then printing hello world (or any subsequent code).
+
+If you want to wait until the current task has finished, use self.client.scheduler.prepend(task_obj). This will make the task run once the current task has finished.
+
+If you want to wait until the current activity has finished, use self.client.scheduler.append(task_obj). This will make the task run once all tasks within the current activity have finished.
+
+
+Because we are scheduling at an activity level and not a task level, we always add a block of tasks to the queue.
+The amount of time an activity takes is decided by first calculating the maximum of the time of the next time range and the maximum execution time of the activity. 
+If that amount is less than the minimum time the activity should take, give the amount of time as the minimum - if it overruns, thats fine, but we want to minimise overruns
+Otherwise, choose a random number between that maximum and the minimum time the activity should take and set that as the time the activity SHOULD take.
+Then each task has a defined percentage of that time and when the tasks are put into the block which will go into the queue, each task it's start parameters and that time.
+The block is then appended to the end of the scheduler queue.
+
+Only once the scheduler queue is completely empty, the next activity's block of tasks are added to the scheduler.
+
+# TODO task redundacy - must have a failsafe to work without server?
+
+# TODO: Produce example tasks

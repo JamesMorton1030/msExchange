@@ -1,0 +1,157 @@
+{
+    "_id": "5e5419d59c09c84974ec8a39",
+    "name": {
+        "firstname": "Adam",
+        "surname": "Watson"
+    },
+    "mode": "AUS",
+    "profile": "R&D",
+    "culture": "English",
+    "credentials": {
+        "username": "aw",
+        "password": "securepassword"
+    },
+    "personality": {
+        "openness": 4,
+        "conscientiousness": 5,
+        "extraversion": 7,
+        "agreeableness": 8,
+        "neuroticism": 8,
+        "variability": 5
+    },
+    "emotion": {
+        "anger": 7,
+        "disgust": 6,
+        "fear": 8,
+        "joy": 3,
+        "sadness": 9
+    },
+    "writing": {
+        "analytical": 10,
+        "confident": 3,
+        "tentative": 4
+    },
+    "schedules": {
+        "friday": {},
+        "monday": {
+            "time_blocks": [
+                {
+                    "activities": [
+                        {
+                            "tasks": [
+                                {
+                                    "percentage_time_allocated": 100,
+                                    "task_choices": [
+                                        {
+                                            "_id": {
+                                                "class": "BrowseWebsite",
+                                                "module": "Browser"
+                                            },
+                                            "selection_chance": 100,
+                                            "options": {
+                                                "close_app": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            "name": "Test Activity",
+                            "scheduling": {
+                                "minimum_execution": 33,
+                                "maximum_execution": 57,
+                                "selection_chance": 100
+                            }
+                        }
+                    ],
+                    "timing": {
+                        "start": "04:00",
+                        "end": "19:00"
+                    }
+                }
+            ]
+        },
+        "saturday": {
+            "time_blocks": [
+                {
+                    "activities": [
+                        {
+                            "tasks": [
+                                {
+                                    "percentage_time_allocated": 100,
+                                    "task_choices": [
+                                        {
+                                            "_id": {
+                                                "class": "WriteLorem",
+                                                "module": "Chrome"
+                                            },
+                                            "selection_chance": 100,
+                                            "options": {
+                                                "close_app": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            "name": "Test Activity",
+                            "scheduling": {
+                                "minimum_execution": 33,
+                                "maximum_execution": 57,
+                                "selection_chance": 100
+                            }
+                        }
+                    ],
+                    "timing": {
+                        "start": "0:00",
+                        "end": "23:59"
+                    }
+                }
+            ]
+        },
+        "sunday": {},
+        "thursday": {},
+        "tuesday": {},
+        "wednesday": {
+            "time_blocks": [
+                {
+                    "activities": [
+                        {
+                            "tasks": [
+                                {
+                                    "percentage_time_allocated": 100,
+                                    "task_choices": [
+                                        {
+                                            "_id": {
+                                                "class": "BrowseWebsite",
+                                                "module": "Browser"
+                                            },
+                                            "selection_chance": 100,
+                                            "options": {
+                                                "click_links": true,
+                                                "enum_test": "enumval2",
+                                                "int_test": 3,
+                                                "string_test": "Dave",
+                                                "url_list": [
+                                                    "Test"
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            "name": "Test Activity",
+                            "scheduling": {
+                                "minimum_execution": 33,
+                                "maximum_execution": 57,
+                                "selection_chance": 100
+                            }
+                        }
+                    ],
+                    "timing": {
+                        "start": "04:00",
+                        "end": "19:00"
+                    }
+                }
+            ]
+        }
+    }
+}

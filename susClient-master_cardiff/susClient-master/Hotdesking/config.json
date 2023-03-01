@@ -1,0 +1,39 @@
+{
+  "api_url": "http://127.0.0.1:5001",
+  "logging": {
+    "activity": {
+      "log_to_server": {
+        "enabled": true,
+        "endpoint": "/api/log/activity"
+      },
+      "log_to_stdout": {
+        "enabled": true
+      },
+      "log_to_file": {
+        "enabled": false,
+        "file_path": "C:/ProgramData/SUS/Hotdesking/activity_logs.json"
+      }
+    },
+    "debug": {
+      "log_to_server": {
+        "enabled": true,
+        "endpoint": "/api/log/debug"
+      },
+      "log_to_stdout": {
+        "enabled": true
+      },
+      "log_to_file": {
+        "enabled": false,
+        "file_path": "C:/ProgramData/SUS/Hotdesking/debug_logs.json"
+      }
+    }
+  },
+  "use_psexec": false,
+  "default_credentials": {
+    "_comment": "In the event that the server cannot be reached, or no credentials are available, these credentials will be used to log into the machine. If enabled is true, no attempt will be made to connect to the server.",
+    "enabled": false,
+    "username": "control",
+    "password": "pass@word1",
+    "delay": 10
+  }
+}
