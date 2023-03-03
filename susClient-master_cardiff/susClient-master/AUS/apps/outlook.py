@@ -286,7 +286,8 @@ class ReadEmail(BaseTask):
         return len(text), total_time
 
     def reply_to_email(self):
-        '''Sends a reply to currently selected email
+        '''
+        Sends a reply to currently selected email
         '''
         self.outlook.descendants(control_type="Button", title="Reply")[0].click()
         time.sleep(3)
