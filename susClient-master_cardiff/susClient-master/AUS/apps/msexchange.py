@@ -8,6 +8,9 @@ import re
 import time
 import os
 import _ctypes
+import sys
+
+sys.path.append("./utils")
 
 from pywinauto import Desktop, keyboard
 from pywinauto.timings import TimeoutError
@@ -18,11 +21,11 @@ from pywinauto.base_wrapper import ElementNotVisible
 from subprocess import Popen
 from comtypes import COMError
 
-from apps import BaseApp, BaseTask
-from utils import link_check
-from utils.pywinauto_text import type_keys_into_window
-from utils.text_generator import TextGenerator
-from utils.find_executable import get_executable_path
+#from __init__ import BaseApp, BaseTask
+import link_check
+import pywinauto_text
+import text_generator
+import find_executable 
 
 def descendant(email_window, control_type, title):
         """

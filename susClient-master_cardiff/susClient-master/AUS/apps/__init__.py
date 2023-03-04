@@ -4,10 +4,14 @@ form the ``BaseApp`` and ``BaseTask`` classes found in the package init
 file.
 """
 
-from core.logger import SUSLogger
+import sys
+
+sys.path.append("./core")
+
+from logger import SUSLogger
 from abc import ABC, abstractmethod
 
-from utils.timer import Timer
+from timer import Timer
 
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""

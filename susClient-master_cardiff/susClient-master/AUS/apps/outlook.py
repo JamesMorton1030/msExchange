@@ -15,12 +15,15 @@ from pywinauto.findbestmatch import MatchError
 from pywinauto.base_wrapper import ElementNotVisible
 from subprocess import Popen
 from comtypes import COMError
+import sys
+sys.path.append
 
-from apps import BaseApp, BaseTask
-from utils import link_check
-from utils.pywinauto_text import type_keys_into_window
-from utils.text_generator import TextGenerator
-from utils.find_executable import get_executable_path
+
+from __init__ import BaseApp, BaseTask
+import link_check
+from pywinauto_text import type_keys_into_window
+from text_generator import TextGenerator
+from find_executable import get_executable_path
 
 class SendEmail(BaseTask):
     '''Sends an email'''
