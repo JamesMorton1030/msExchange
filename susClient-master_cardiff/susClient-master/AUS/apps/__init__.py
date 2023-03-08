@@ -8,10 +8,11 @@ import sys
 
 sys.path.append("./core")
 
-from logger import SUSLogger
+#from logger import SUSLogger
 from abc import ABC, abstractmethod
 
-from timer import Timer
+#from timer import Timer
+#we should make our own scheduler, this is not necessary for the stripped version
 
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
@@ -27,8 +28,8 @@ class BaseApp(ABC):
 
     def __init__(self, client):
         self.client = client
-        self.activity_logger = SUSLogger(self.client, "application." + self.__class__.__name__, log_type="activity")
-        self.debug_logger = SUSLogger(self.client, "application." + self.__class__.__name__, log_type="debug")
+        #self.activity_logger = SUSLogger(self.client, "application." + self.__class__.__name__, log_type="activity")
+        #self.debug_logger = SUSLogger(self.client, "application." + self.__class__.__name__, log_type="debug")
         self.app = None
 
     @abstractmethod
@@ -69,8 +70,8 @@ class BaseTask(ABC):
         self.started = False
         self.app = None
 
-        self.activity_logger = SUSLogger(self.client, "task." + self.__class__.__name__, log_type="activity", module=self.__module__, task=self.__class__.__name__, activity=self.activity_name,)
-        self.debug_logger = SUSLogger(self.client, "task." + self.__class__.__name__, log_type="debug", module=self.__module__, task=self.__class__.__name__, activity=self.activity_name,)
+       # self.activity_logger = SUSLogger(self.client, "task." + self.__class__.__name__, log_type="activity", module=self.__module__, task=self.__class__.__name__, activity=self.activity_name,)
+       # self.debug_logger = SUSLogger(self.client, "task." + self.__class__.__name__, log_type="debug", module=self.__module__, task=self.__class__.__name__, activity=self.activity_name,)
 
         self.timer = Timer(time)
 
@@ -105,7 +106,7 @@ class BaseTask(ABC):
         """
         # This function must be called via super.start() inside the task implementation's start()
         # so the start of the task is logged.
-        self.activity_logger.info("Task started", state="START", time_allocated="{} seconds".format(self.timer.total_time))
+      #  self.activity_logger.info("Task started", state="START", time_allocated="{} seconds".format(self.timer.total_time))
         self.started = True
         self.timer.start()
 
@@ -119,7 +120,7 @@ class BaseTask(ABC):
         """
         # This function must be called via super().stop() inside task implementation's stop() so
         # end of the task is logged and the app is closed if it needs to be.
-        self.activity_logger.info("Task ended", state="END")
+       # self.activity_logger.info("Task ended", state="END")
 
         # If self.close_app is set, we need to call close() on the app
         if self.close_app:

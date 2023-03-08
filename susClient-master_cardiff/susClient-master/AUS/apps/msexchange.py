@@ -21,11 +21,7 @@ from pywinauto.base_wrapper import ElementNotVisible
 from subprocess import Popen
 from comtypes import COMError
 
-#from __init__ import BaseApp, BaseTask
-import link_check
-import pywinauto_text
-import text_generator
-import find_executable 
+from __init__ import BaseApp, BaseTask
 
 def descendant(email_window, control_type, title):
         """
@@ -89,7 +85,7 @@ class SendEmail(Email):
         """
 
         self.app = self.client.modules.get_app("apps.outlook", APPS[0])(self.client) # This initalises the app we are going to open
-        self.text_generator = TextGenerator(self.client) # This initalises the text generator
+        #self.text_generator = TextGenerator(self.client) # This initalises the text generator
         self.recipient_list = recipient_list
         self.cc_list = cc_list
         # If no subject/body is passed, use text generator
